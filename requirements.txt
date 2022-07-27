@@ -1,0 +1,4 @@
+attrs==21.4.0
+cattrs==22.1.0
+exceptiongroup==1.0.0rc8
+pkg-resources==0.0.0

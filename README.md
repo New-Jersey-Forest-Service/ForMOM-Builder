@@ -17,3 +17,8 @@ You can try it yourself by running launchgui.py and using one of the files in th
 **Credits**: All development by Michael Gorbunov, but a lot of good 
 feedback and ideas came from others on the team - specifically Bill, Bernie, and Courtney
 
+
+## Running
+
+Requirements are in requirements.txt and can be installed with.
+
