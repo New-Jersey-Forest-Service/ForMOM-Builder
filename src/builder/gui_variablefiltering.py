@@ -6,13 +6,13 @@ import tkinter as tk
 from tkinter import ttk
 from typing import Dict, List
 
-import proc_constraints as proc
-import gui_projectoverview
-import linting as lint
-import models
-from gui_consts import *
-import devtesting
-import proc_render as render
+import builder.proc_constraints as proc
+import builder.gui_projectoverview as gui_projectoverview
+import builder.linting as lint
+import builder.models as models
+import builder.devtesting as devtesting
+import builder.proc_render as render
+from builder.gui_consts import *
 
 
 

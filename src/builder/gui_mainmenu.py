@@ -8,11 +8,11 @@ import tkinter as tk
 import tkinter.messagebox as tkmsg
 from tkinter import ttk
 
-import gui_newproject
-import gui_projectoverview
-import io_file
-import models
-from gui_consts import *
+import builder.gui_newproject as gui_newproject
+import builder.gui_projectoverview as gui_projectoverview
+import builder.io_file as io_file
+import builder.models as models
+from builder.gui_consts import *
 
 _passedProjectState: models.ProjectState = None
 _passedRoot: tk.Tk = None

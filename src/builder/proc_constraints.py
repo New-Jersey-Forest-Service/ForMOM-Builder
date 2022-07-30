@@ -13,13 +13,13 @@ Started 05/21/2022
 '''
 
 from copy import deepcopy
-import models
 from typing import List, Dict
 import itertools
 
-import io_cmd
-import io_file
-import linting as lint
+import builder.models as models
+import builder.io_cmd as io_cmd
+import builder.io_file as io_file
+import builder.linting as lint
 
 
 # TODO:

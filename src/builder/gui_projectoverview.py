@@ -8,14 +8,14 @@ import tkinter as tk
 from tkinter import ttk
 from typing import List
 
-import proc_constraints as proc
-import proc_render as render
-import gui_variablefiltering
-import gui_newcsv
-import models
-from gui_consts import *
-import devtesting
-import io_file
+import builder.proc_constraints as proc
+import builder.proc_render as render
+import builder.gui_variablefiltering as gui_variablefiltering
+import builder.gui_newcsv as gui_newcsv
+import builder.models as models
+import builder.devtesting as devtesting
+import builder.io_file as io_file
+from builder.gui_consts import *
 
 # Exposed GUI Elements
 _frmConstrsDisplay: tk.Frame = None

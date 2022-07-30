@@ -4,8 +4,9 @@ Processor for (string) Rendering
 This file contains methods for string manipulation and converting data to strings.
 '''
 
-import models
 from typing import List
+
+import builder.models as models
 
 
 

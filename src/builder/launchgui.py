@@ -9,8 +9,8 @@ import pathlib
 import tkinter as tk
 from tkinter import ttk
 
-import gui_mainmenu
-import models
+import builder.gui_mainmenu as gui_mainmenu
+import builder.models as models
 
 
 def main():
@@ -38,6 +38,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-else:
-	print("[[ ERROR ]] This file is not meant to be imported")
-	num = 1 / 0

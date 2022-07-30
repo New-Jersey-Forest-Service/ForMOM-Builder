@@ -1,17 +1,17 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Dict, List
-from devtesting import dummyProjectState
-import models
 from enum import Enum, auto
 
-import proc_constraints as proc
-import linting as lint
-import proc_render as render
-import io_file
-from gui_consts import CSV_FILES, WIDTH_BIG, WIDTH_MED, WIDTH_SML
+import builder.models as models
+import builder.proc_constraints as proc
+import builder.linting as lint
+import builder.proc_render as render
+import builder.io_file as io_file
+import builder.gui_projectoverview as gui_projectoverview
+from builder.devtesting import dummyProjectState
+from builder.gui_consts import CSV_FILES, WIDTH_BIG, WIDTH_MED, WIDTH_SML
 
-import gui_projectoverview
 
 class ChangeOptions:
 	ADDED = auto()

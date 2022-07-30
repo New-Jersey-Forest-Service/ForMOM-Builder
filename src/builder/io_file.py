@@ -8,9 +8,10 @@ from pathlib import Path
 from tkinter import dialog, filedialog
 from typing import Any, List, Tuple, Type
 import csv
-import models
 import copy
-import proc_constraints as proc
+
+import builder.models as models
+import builder.proc_constraints as proc
 
 
 

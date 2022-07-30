@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 from typing import List
 
-import linting as lint
+import builder.linting as lint
 
 
 def getTagGroupNames (tagMems: List[List[str]]) -> List[str]:
