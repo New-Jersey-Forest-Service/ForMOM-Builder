@@ -74,8 +74,6 @@ class GUINewCSV:
 		self._oldVarNames = projectState.varData.all_vars
 
 
-		print(projectState)
-
 		self._build_ui(root)
 		self._init_draw()
 		self._init_draw()
@@ -481,7 +479,7 @@ class GUINewCSV:
 			return
 
 		# Stage 2 - Naming Items
-		print(f"Error: {self._errWithNamesList}")
+		# print(f"Error: {self._errWithNamesList}")
 		if self._errWithNamesList != None:
 			self.msg_import_err.configure(text=self._errWithNamesList)
 			self.msg_import_err.grid(column=0, columnspan=3, pady=10, row=2)
@@ -507,9 +505,14 @@ class GUINewCSV:
 		print(changedgroups)
 		for group in changedgroups:
 			addedvar = tk.StringVar()
-			addedvar.set(value=self._changesTag[group][DifferenceOptions.ADDED])
+			addedvarslist = self._changesTag[group][DifferenceOptions.ADDED]
+			addedvarslist.sort()
+			addedvar.set(value=addedvarslist)
+
 			removedvar = tk.StringVar()
-			removedvar.set(value=self._changesTag[group][DifferenceOptions.REMOVED])
+			removedvarslist = self._changesTag[group][DifferenceOptions.REMOVED]
+			removedvarslist.sort()
+			removedvar.set(value=removedvarslist)
 
 			nb_tab = ttk.Frame(self.nb_change_tags, padding=10, width=200)
 			nb_tab.grid(column=0, row=0, sticky="nsew")
@@ -531,8 +534,13 @@ class GUINewCSV:
 			self.nb_change_tags.add(nb_tab, text=group)
 		
 		# Variable Changes
-		var_addvar = tk.StringVar(value=self._changesVars[DifferenceOptions.ADDED])
-		var_remvar = tk.StringVar(value=self._changesVars[DifferenceOptions.REMOVED])
+		addedvarslist = self._changesVars[DifferenceOptions.ADDED]
+		addedvarslist.sort()
+		var_addvar = tk.StringVar(value=addedvarslist)
+
+		removedvarslist = self._changesVars[DifferenceOptions.REMOVED]
+		removedvarslist.sort()
+		var_remvar = tk.StringVar(value=removedvarslist)
 
 		self.lsb_change_vars_added.configure(listvariable=var_addvar)
 		self.lsb_change_removed.configure(listvariable=var_remvar)
