@@ -25,6 +25,7 @@ def main():
 	# Load Theme info
 	# The forest theme honestly just seems too bright with a GUI not designed for it
 	# If I ever redesign the program then I'll use it but for now nah
+
 	# style = ttk.Style(root)
 	# themepath = pathlib.Path(__file__).parent.joinpath('../theme/forest-light.tcl').absolute()
 	# root.tk.call("source", themepath)

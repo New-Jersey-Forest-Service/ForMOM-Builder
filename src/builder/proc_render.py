@@ -87,52 +87,6 @@ def renderConstraintGroup (group: models.ConstraintGroup, delim: str, charwidth:
 	return finalStr
 
 
-# def renderCompiledConstraintOLD(constr: models.CompiledConstraint, delim: str, charwidth:int=-1) -> str:
-# 	'''
-# 	Converts a compile constriant into a string for previewing
-# 	'''
-# 	varsStr = ""
-
-# 	for ind, varTags in enumerate(constr.var_tags):
-# 		coeff = constr.var_coeffs[ind]
-# 		coeffStr = ''
-
-# 		if coeff == 1:
-# 			pass
-# 		elif coeff == int(coeff):
-# 			coeffStr = str(int(coeff)) + "*"
-# 		else:
-# 			coeffStr = str(coeff) + "*"
-
-# 		varsStr += coeffStr + delim.join(varTags)
-# 		varsStr += " + "
-
-# 	varsStr = varsStr[:-len(" + ")]
-# 	rightHandStr = str(constr.compare_type.toSymbols()) + " " + str(constr.compare_value)
-# 	if charwidth != -1:
-# 		varsStr = trimEllipsisRight(varsStr, charwidth - len(rightHandStr) - 1)
-
-# 	return constr.name + ":\n" + varsStr + " " + rightHandStr + "\n"
-
-
-# def renderMultipleCompiledConstraintsOLD(constrList: List[models.CompiledConstraint], delim: str, charWidth: int, numConstrs=5) -> str:
-# 	'''
-# 	Converts a list of compiled constraints
-# 	'''
-# 	clist = constrList
-# 	if numConstrs != -1:
-# 		clist = clist[:numConstrs]
-	
-# 	finalStr = ''
-# 	for constr in clist:
-# 		finalStr += renderCompiledConstraintOLD(constr, delim, charWidth)
-# 		finalStr += '\n'
-	
-# 	return finalStr
-
-
-
-
 
 
 
@@ -140,3 +94,8 @@ def renderConstraintGroup (group: models.ConstraintGroup, delim: str, charwidth:
 if __name__ == '__main__':
 	print(trimEllipsisRight("1234567890", maxLen=7))
 	print(trimEllipsisLeft("1234567890", maxLen=7))
+
+
+
+
+
