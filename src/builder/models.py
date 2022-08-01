@@ -186,63 +186,23 @@ class ProjectState_V0_0:
 
 
 
+	
 
-_model_versions = [
-	ProjectState,
-	ProjectState_V0_0
-]
 
-def readProjectStateFile (filepath: str) -> Union[ProjectState, str]:
+
+
+def toOutputStr (obj: Any, type: Type, pretty=False) -> str:
 	'''
-	Attempts to read the project file at the filepath.
-
-	If reading an older project file, will convert up
-	to a more recent version.
-
-	Returns None and an error message if unsuccesful.
+	Pretty = 2 will format the json with genuine indents.
 	'''
-	fileData = None
-	try:
-		with open(filepath, 'r') as file:
-			fileData = file.read()
-	except:
-		pass
-
-	if fileData == None:
-		return None, "Unable to read file"
-	
-	# See if the data is in fact a model file
-	model = None
-	for m in _model_versions:
-		try:
-			model = fromOutputStr(fileData, m)
-		except:
-			continue
-	
-	if model == None:
-		return None, "Not a valid project file, unable to parse"
-	
-	# Cast the model up
-	while not isinstance(model, ProjectState):
-		_prevModel = model
-		model = model.convertUp()
-
-		if _prevModel == model:
-			return None, "Conversion code is messed up"
-	
-	return model, None
-	
-	
-
-
-
-
-def toOutputStr (obj: Any, type: Type) -> str:
 	if not isinstance(obj, type):
 		objType = type(obj)
 		raise TypeError(f"Expected {type} got {objType} ")
 	
-	return json.dumps(cattrs.unstructure(obj))
+	if not pretty:
+		return json.dumps(cattrs.unstructure(obj))
+	else:
+		return json.dumps(cattrs.unstructure(obj), indent=2)
 
 
 # TODO: How do I type annotate this ??

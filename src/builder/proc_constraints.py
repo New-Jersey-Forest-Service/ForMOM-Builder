@@ -13,7 +13,7 @@ Started 05/21/2022
 '''
 
 from copy import deepcopy
-from typing import List, Dict
+from typing import List, Dict, Union
 import itertools
 
 import builder.models as models
@@ -186,6 +186,10 @@ def change_varsdata (newVarData: models.VarsData, projectstate: models.ProjectSt
 		setupList=[]
 	)
 
+	newGroups = list(set(newVarData.tag_order) - set(oldVarData.tag_order))
+	sameGroups = list(set(newVarData.tag_order).intersection(set(oldVarData.tag_order)))
+
+
 	for const in projectstate.setupList:
 		newsplits = []
 		for x in const.splitBy:
@@ -193,8 +197,6 @@ def change_varsdata (newVarData: models.VarsData, projectstate: models.ProjectSt
 				newsplits.append(x)
 
 		# Transfer over the tags that stayed the same
-		newGroups = list(set(newVarData.tag_order) - set(oldVarData.tag_order))
-		sameGroups = list(set(newVarData.tag_order).intersection(set(oldVarData.tag_order)))
 		newLeftTags = {}
 		newRightTags = {}
 
@@ -203,6 +205,10 @@ def change_varsdata (newVarData: models.VarsData, projectstate: models.ProjectSt
 				set(oldVarData.tag_members[tagGroup]) - 
 				set(newVarData.tag_members[tagGroup])
 				)
+
+			print(f"Const: {const.namePrefix}")
+			print(f"Removed: {list(removedTags)}")
+			print()
 
 			transferedLeft = []
 			for x in const.selLeftTags[tagGroup]:
@@ -238,6 +244,60 @@ def change_varsdata (newVarData: models.VarsData, projectstate: models.ProjectSt
 
 
 
+
+#
+# Working with the model
+#
+
+
+_model_versions = [
+	models.ProjectState,
+	models.ProjectState_V0_0
+]
+
+def readProjectStateFile (filepath: str) -> Union[models.ProjectState, str]:
+	'''
+	Attempts to read the project file at the filepath.
+
+	If reading an older project file, will convert up
+	to a more recent version.
+
+	Returns None and an error message if unsuccesful.
+	'''
+	fileData = None
+	try:
+		with open(filepath, 'r') as file:
+			fileData = file.read()
+	except:
+		pass
+
+	if fileData == None:
+		return None, "Unable to read file"
+	
+	# See if the data is in fact a model file
+	model = None
+	for m in _model_versions:
+		try:
+			model = models.fromOutputStr(fileData, m)
+		except:
+			continue
+	
+	if model == None:
+		return None, "Not a valid project file, unable to parse"
+	
+	# Cast the model up
+	while not isinstance(model, models.ProjectState):
+		_prevModel = model
+		model = model.convertUp()
+
+		if _prevModel == model:
+			return None, "Conversion code is messed up"
+
+	# Fix Up
+	model = lint.fixupIllegalProjectState(model)
+
+	return model, None
+	
 
 
 

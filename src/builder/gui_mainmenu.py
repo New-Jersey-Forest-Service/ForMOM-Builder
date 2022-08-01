@@ -12,6 +12,7 @@ import builder.gui_newproject as gui_newproject
 import builder.gui_projectoverview as gui_projectoverview
 import builder.io_file as io_file
 import builder.models as models
+import builder.proc_constraints as proc
 from builder.gui_consts import *
 
 _passedProjectState: models.ProjectState = None
@@ -36,7 +37,7 @@ def updateLoadProj():
 	global _passedProjectState
 
 	projFilepath: str = io_file.getOpenFilepath(PROJ_FILES)
-	newProjState, err = models.readProjectStateFile(projFilepath)
+	newProjState, err = proc.readProjectStateFile(projFilepath)
 
 	if err != None:
 		tkmsg.showerror(
