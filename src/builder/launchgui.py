@@ -14,7 +14,7 @@ import builder.models as models
 
 
 def main():
-	print("Hi")
+	print("Get ready to build some constraints...")
 	# Very important to instantiate the object so it can be passed arround
 	projectState = models.ProjectState.createEmptyProjectState()
 

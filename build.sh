@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e # Exit on first failure (non-zero exit code)
 
 # This script will build the program
 #  1) copies /src/ into here
@@ -26,6 +27,7 @@ cp -R ../src/** ./src/
 echo
 echo "[[ Install Dependencies into /src/ ]]"
 
+python3.8 -m pip install --upgrade pip
 python3.8 -m pip install -r ../requirements.txt --target ./src/
 
 
