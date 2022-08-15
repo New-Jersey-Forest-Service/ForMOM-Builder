@@ -221,15 +221,17 @@ def redrawSummaryStats ():
 
 	summaryStr += f'Constraints: {totConstrs}\n'
 	summaryStr += f'Variables Used: {totVarsUsed}\n'
-	summaryStr += f'Variables Not Used: {totUnConVars}\n'
-	summaryStr += "\n"
+	summaryStr += f'Variables Not Used: {totUnConVars}'
 
-	NUM_UNCON_TO_SHOW = 10
-	if len(unconVars) > NUM_UNCON_TO_SHOW:
-		summaryStr += f'First {NUM_UNCON_TO_SHOW} '
-		unconVars = unconVars[:NUM_UNCON_TO_SHOW]
-	summaryStr += 'unconstrained variables:\n'
-	summaryStr += ", ".join(unconVars)
+	if len(unconVars) != 0:
+		summaryStr += "\n\n"
+
+		NUM_UNCON_TO_SHOW = 10
+		if len(unconVars) > NUM_UNCON_TO_SHOW:
+			summaryStr += f'First {NUM_UNCON_TO_SHOW} '
+			unconVars = unconVars[:NUM_UNCON_TO_SHOW]
+		summaryStr += 'unconstrained variables:\n'
+		summaryStr += ", ".join(unconVars)
 
 	# Update
 	_lblSummary.configure(text=summaryStr)
