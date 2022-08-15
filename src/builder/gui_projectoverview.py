@@ -158,11 +158,22 @@ def redrawConstrListFrame (constrGroupList: List[models.SetupConstraintGroup]) -
 		lblName = tk.Label(frmConstr, text=name)
 		lblName.grid(row=0, column=0, sticky="w", padx=10, pady=5)
 
+		frmNum = tk.Frame(frmConstr, bd=1)
+		frmNum.grid(row=0, column=1, sticky="e", padx=5, pady=5)
+
+		numConstrs = proc.getNumConstraints(constrGroup, _passedProjectState.varData)
+		lblNum = tk.Label(frmNum, text=numConstrs)
+		lblNum.grid(row=0, column=0, sticky="nsew", padx=1, pady=1)
+
+		if numConstrs == 0:
+			frmNum.configure(bg='red')
+			lblNum.configure(bg='#E09996')
+
 		btnDelete = tk.Button(frmConstr, text="Delete", command=lambda ind=ind: updateDeleteConstrGroup(ind))
-		btnDelete.grid(row=0, column=1, sticky="e", padx=5, pady=5)
+		btnDelete.grid(row=0, column=2, sticky="e", padx=5, pady=5)
 
 		btnEdit = tk.Button(frmConstr, text="Edit >", command=lambda ind=ind: transitionToEditing(ind))
-		btnEdit.grid(row=0, column=2, sticky="e", padx=5, pady=5)
+		btnEdit.grid(row=0, column=3, sticky="e", padx=5, pady=5)
 
 
 

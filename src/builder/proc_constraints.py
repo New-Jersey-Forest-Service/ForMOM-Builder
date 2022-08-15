@@ -88,8 +88,13 @@ def buildVarDataObject (varnamesRaw: List[str], delim: str, tagGroupNames: List[
 	)
 
 
-# I apologize to future me if I ever have to refactor this :(
 def buildConstraintGroup (groupSetup: models.SetupConstraintGroup, varData: models.VarsData) -> models.ConstraintGroup:
+	'''
+	Generates a constraint group, which holds the actual equations.
+
+	Takes a setup object (SetupConstraintGroup), and a varData object.
+	'''
+	# I apologize to future me if I ever have to refactor this, this is a tad convoluted ...
 	delim: str = varData.delim
 
 	# Generate all applicable variables
@@ -177,6 +182,13 @@ def buildConstraintGroup (groupSetup: models.SetupConstraintGroup, varData: mode
 	)
 
 
+def getNumConstraints (setup: models.SetupConstraintGroup, varData: models.VarsData) -> int:
+	'''
+	Returns how many constraints exist in the setup object.
+
+	This is done by actually building the constriant group object.
+	'''
+	return len(buildConstraintGroup(setup, varData).equations)
 
 
 def change_varsdata (newVarData: models.VarsData, projectstate: models.ProjectState) -> models.ProjectState:

@@ -130,9 +130,26 @@ class SetupConstraintGroup:
 			namePrefix="unnamed",
 			splitBy=[],
 			defComp=ComparisonSign.EQ,
-			defLeftCoef=1.0,
+			defLeftCoef=2.0,
 			defRightCoef=1.0,
-			defConstant=0,
+			defConstant=10,
+			selLeftTags=selectedTags,
+			selRightTags=deepcopy(selectedTags)
+		)
+	
+	@staticmethod
+	def createFullSetup(varData: VarsData):
+		selectedTags = {}
+		for tag in varData.tag_order:
+			selectedTags[tag] = deepcopy(varData.tag_members[tag])
+		
+		return SetupConstraintGroup(
+			namePrefix="unnamed_full",
+			splitBy=deepcopy(varData.tag_order),
+			defComp=ComparisonSign.EQ,
+			defLeftCoef=2.0,
+			defRightCoef=1.0,
+			defConstant=10,
 			selLeftTags=selectedTags,
 			selRightTags=deepcopy(selectedTags)
 		)
@@ -193,7 +210,7 @@ class ProjectState_V0_0:
 
 def toOutputStr (obj: Any, type: Type, pretty=False) -> str:
 	'''
-	Pretty = 2 will format the json with genuine indents.
+	Pretty = True will format the json with genuine indents.
 	'''
 	if not isinstance(obj, type):
 		objType = type(obj)

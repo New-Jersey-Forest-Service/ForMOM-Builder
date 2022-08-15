@@ -27,9 +27,14 @@ def dummyProjectState() -> models.ProjectState:
 	# TODO: Actually have some constraints here for testing
 	constrGroupList: List[models.ConstraintGroup] = []
 
+	setupList = [
+		models.SetupConstraintGroup.createEmptySetup(varData),
+		models.SetupConstraintGroup.createFullSetup(varData)
+	]
+
 	return models.ProjectState(
 		varData = varData,
-		setupList=[models.SetupConstraintGroup.createEmptySetup(varData)]
+		setupList=setupList
 		# constraintList = constrGroupList
 	)
 
