@@ -101,7 +101,7 @@ class ConstraintGroup:
 	equations: List[Equation]
 
 	# TODO: These may be unneeded ??
-	# These are meant to go unchanged once the group
+	# These are meant to go unchanged once the group is built
 	SPLIT_BY: List[str]
 	DEFAULT_COMPARE: ComparisonSign
 	DEFAULT_LEFT_COEF: float
