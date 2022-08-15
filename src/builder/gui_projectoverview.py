@@ -19,6 +19,7 @@ from builder.gui_consts import *
 
 # Exposed GUI Elements
 _frmConstrsDisplay: tk.Frame = None
+_lblSummary: tk.Label = None
 
 
 # State Variables
@@ -27,6 +28,9 @@ _constrGroupList: List[models.SetupConstraintGroup] = None
 _passedProjectState: models.ProjectState = None
 _passedRoot: tk.Tk = None
 
+# Calculated from _constrGroupList
+_constrPerGroup: List[int] = None
+_varsConstrainted: List[List[str]] = None
 
 # This will be useful for scrolling
 # https://stackoverflow.com/questions/68056757/how-to-scroll-through-tkinter-widgets-that-were-defined-inside-of-a-function
@@ -48,7 +52,7 @@ def updateDeleteConstrGroup (constrInd: int) -> None:
 
 	_constrGroupList.pop(constrInd)
 
-	redrawConstrListFrame(_constrGroupList)
+	redrawConstrUpdate(_constrGroupList)
 
 
 def updateNewConstrGroup () -> None:
@@ -57,7 +61,7 @@ def updateNewConstrGroup () -> None:
 
 	_constrGroupList.append(models.SetupConstraintGroup.createEmptySetup(_passedProjectState.varData))
 
-	redrawConstrListFrame(_constrGroupList)
+	redrawConstrUpdate(_constrGroupList)
 
 
 # TODO: Move so much of this into fileio
@@ -134,6 +138,29 @@ def transitionToObjReplace () -> None:
 # Redraw Calls
 #
 
+def redrawConstrUpdate (constrGroupList: List[models.SetupConstraintGroup]) -> None:
+	global _constrPerGroup, _varsConstrainted
+
+	print("Constraint update")
+
+	# Generate global data
+	_constrPerGroup = []
+	_varsConstrainted = []
+
+	for cGroup in constrGroupList:
+		fullConstraint = proc.buildConstraintGroup(cGroup, _passedProjectState.varData)
+
+		_constrPerGroup.append(len(fullConstraint.equations))
+
+		for eq in fullConstraint.equations:
+			for var in eq.leftVars + eq.rightVars:
+				if var not in _varsConstrainted:
+					_varsConstrainted.append(var)
+
+	redrawConstrListFrame(constrGroupList)
+	redrawSummaryStats()
+
+
 def redrawConstrListFrame (constrGroupList: List[models.SetupConstraintGroup]) -> None:
 	global _frmConstrsDisplay
 
@@ -143,6 +170,7 @@ def redrawConstrListFrame (constrGroupList: List[models.SetupConstraintGroup]) -
 	CONSTRS_PER_ROW = 3
 	_frmConstrsDisplay.columnconfigure([x for x in range(CONSTRS_PER_ROW)], weight=1)
 
+	# Render everything
 	for ind, constrGroup in enumerate(constrGroupList):
 		frmConstr = tk.Frame(_frmConstrsDisplay, relief=tk.RIDGE, bd=2)
 		frmConstr.grid(
@@ -161,7 +189,7 @@ def redrawConstrListFrame (constrGroupList: List[models.SetupConstraintGroup]) -
 		frmNum = tk.Frame(frmConstr, bd=1)
 		frmNum.grid(row=0, column=1, sticky="e", padx=5, pady=5)
 
-		numConstrs = proc.getNumConstraints(constrGroup, _passedProjectState.varData)
+		numConstrs = _constrPerGroup[ind]
 		lblNum = tk.Label(frmNum, text=numConstrs)
 		lblNum.grid(row=0, column=0, sticky="nsew", padx=1, pady=1)
 
@@ -175,6 +203,36 @@ def redrawConstrListFrame (constrGroupList: List[models.SetupConstraintGroup]) -
 		btnEdit = tk.Button(frmConstr, text="Edit >", command=lambda ind=ind: transitionToEditing(ind))
 		btnEdit.grid(row=0, column=3, sticky="e", padx=5, pady=5)
 
+
+def redrawSummaryStats ():
+	global _lblSummary
+	
+	allVars = _passedProjectState.varData.all_vars
+
+	unconVars = set(map(lambda x: "_".join(x), allVars)) - set(map(lambda x: "_".join(x), _varsConstrainted))
+	unconVars = list(unconVars)
+
+	# Build the summary string
+	summaryStr = ""
+
+	totConstrs = sum(_constrPerGroup)
+	totUnConVars = len(unconVars)
+	totVarsUsed = len(allVars) - totUnConVars
+
+	summaryStr += f'Constraints: {totConstrs}\n'
+	summaryStr += f'Variables Used: {totVarsUsed}\n'
+	summaryStr += f'Variables Not Used: {totUnConVars}\n'
+	summaryStr += "\n"
+
+	NUM_UNCON_TO_SHOW = 10
+	if len(unconVars) > NUM_UNCON_TO_SHOW:
+		summaryStr += f'First {NUM_UNCON_TO_SHOW} '
+		unconVars = unconVars[:NUM_UNCON_TO_SHOW]
+	summaryStr += 'unconstrained variables:\n'
+	summaryStr += ", ".join(unconVars)
+
+	# Update
+	_lblSummary.configure(text=summaryStr)
 
 
 
@@ -201,27 +259,31 @@ def buildGUI_ProjectOverview(root: tk.Tk, projectState: models.ProjectState) -> 
 
 	root.title("Constraint Builder - Project Overview")
 	root.rowconfigure(1, weight=1)
-	root.columnconfigure(0, weight=1)
+	root.columnconfigure([0, 1], weight=1)
 
 	# Header text
 	lblHeader = tk.Label(root, text="Project Overview")
-	lblHeader.grid(row=0, column=0, padx=10, pady=(10, 0))
+	lblHeader.grid(row=0, column=0, columnspan=2, padx=10, pady=(10, 0))
 
 	# Constraint Groups Display
 	frmConstrsDisplay = buildConstraintGroupListFrame(root)
-	frmConstrsDisplay.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="nsew")
+	frmConstrsDisplay.grid(row=1, column=0, columnspan=2, padx=10, pady=(10, 0), sticky="nsew")
 
 	# New Constraint Group
 	frmNewConstrBtn = buildConstraintButtonFrame(root)
-	frmNewConstrBtn.grid(row=2, column=0, padx=10, pady=(10, 0), sticky="ew")
+	frmNewConstrBtn.grid(row=2, column=0, columnspan=2, padx=10, pady=(10, 0), sticky="ew")
+
+	# Summary Info Frame
+	frmSummary = buildSummaryInfoFrame(root)
+	frmSummary.grid(row=3, column=0, padx=10, pady=10)
 
 	# Exporting Buttons
 	frmExport = buildExportButtonsFrame(root)
-	frmExport.grid(row=3, column=0, padx=10, pady=(10, 0), sticky="ew")
+	frmExport.grid(row=3, column=1, padx=10, pady=(10, 0), sticky="es")
 
 
 	print("GUI Build, now redrawing some othe info")
-	redrawConstrListFrame(_constrGroupList)
+	redrawConstrUpdate(_constrGroupList)
 	
 
 def buildConstraintGroupListFrame(root: tk.Tk) -> tk.Frame:
@@ -245,10 +307,10 @@ def buildConstraintButtonFrame(root: tk.Tk) -> tk.Frame:
 
 def buildExportButtonsFrame(root: tk.Tk) -> tk.Frame:
 	frmExport = tk.Frame(root)
-	frmExport.columnconfigure([0, 1], weight=1)
+	frmExport.columnconfigure([x for x in range(1000)], weight=1)
 
 	btnChangeCsv = ttk.Button(frmExport, text="Change Objective .csv", command=transitionToObjReplace)
-	btnChangeCsv.grid(row=0, column=0, sticky="e")
+	btnChangeCsv.grid(row=0, column=0, sticky="e", padx=10)
 
 	btnSaveProj = tk.Button(frmExport, text="Save Project", command=updateSaveProject)
 	btnSaveProj.grid(row=0, column=1, sticky="e")
@@ -258,6 +320,18 @@ def buildExportButtonsFrame(root: tk.Tk) -> tk.Frame:
 
 	return frmExport
 
+
+def buildSummaryInfoFrame(root: tk.Tk) -> tk.Frame:
+	global _lblSummary
+
+	frmSummary = tk.Frame(root, padx=5, pady=10, bd=1, relief=tk.SUNKEN, height=WIDTH_SML)
+	frmSummary.columnconfigure(0, weight=1)
+
+	_lblSummary = tk.Label(frmSummary, wrap=300, width=WIDTH_BIG, justify="left")
+	_lblSummary.configure(text = "Hi this is a summary and so has a lot of text please be patient")
+	_lblSummary.grid(row=0, column=0, sticky="nsew")
+
+	return frmSummary
 
 
 
