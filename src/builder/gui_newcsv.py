@@ -1,3 +1,16 @@
+'''
+GUI New CSV
+
+This screen is meant for replacing the objective file and
+loading in new variables. In applying the new objective file,
+all constraints get updated so that removed variables get removed.
+
+The screen gives info about changes that have taken place.
+'''
+
+
+
+from pprint import pprint
 import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Dict, List
@@ -18,7 +31,7 @@ class ChangeOptions:
 	REMOVED = auto()
 	KEPT = auto()
 
-class DifferenceOptions :
+class DifferenceOptions:
 	ADDED = auto()
 	REMOVED = auto()
 
@@ -82,6 +95,7 @@ class GUINewCSV:
 
 
 	def _build_ui(self, master=None):
+		# build ui
 		self.frm_replacetop = ttk.Frame(master)
 		self.lbl_title = ttk.Label(self.frm_replacetop)
 		self.lbl_title.configure(anchor="center", text="Load New Objective File")
@@ -101,7 +115,7 @@ class GUINewCSV:
 		self.lbl_import_samplevardesc.grid(column=0, row=2, sticky="ew")
 		self.lbl_import_samplevar = ttk.Label(self.lblfrm_import)
 		self.lbl_import_samplevar.configure(text="Select a file")
-		self.lbl_import_samplevar.grid(column=1, padx=10, row=2, sticky="ew")
+		self.lbl_import_samplevar.grid(column=1, padx=10, row=2, sticky="w")
 		__values = ["_", "-", "="]
 		__tkvar = tk.StringVar()
 		self.opt_import_delim = tk.OptionMenu(
@@ -110,10 +124,10 @@ class GUINewCSV:
 		self.opt_import_delim.grid(column=1, padx=10, row=1, sticky="w")
 		self.lbl_import_path = ttk.Label(self.lblfrm_import)
 		self.lbl_import_path.configure(anchor="w", text="Select a file")
-		self.lbl_import_path.grid(column=1, padx=10, row=0, sticky="ew")
+		self.lbl_import_path.grid(column=1, padx=10, row=0, sticky="w")
 		self.lblfrm_import.configure(height=200, text="File Importing", width=200)
 		self.lblfrm_import.grid(column=0, padx=10, row=1, sticky="nsew")
-		self.lblfrm_import.grid_anchor("center")
+		self.lblfrm_import.grid_anchor("n")
 		self.lblfrm_import.rowconfigure(0, pad=10)
 		self.lblfrm_import.rowconfigure(1, pad=10)
 		self.lblfrm_import.rowconfigure(2, pad=20)
@@ -148,7 +162,7 @@ class GUINewCSV:
 			anchor="center", relief="ridge", text="for_type"
 		)
 		self.lbl_import_exist1_name.grid(column=0, ipadx=5, ipady=5, row=0, sticky="e")
-		self.frm_naming_existing.configure(height=200, width=200)
+		self.frm_naming_existing.configure(width=200)
 		self.frm_naming_existing.grid(column=2, row=1, sticky="w")
 		self.frm_naming_existing.grid_anchor("center")
 		self.frm_naming_existing.columnconfigure(1, weight=1)
@@ -184,43 +198,32 @@ class GUINewCSV:
 		)
 		self.lbl_changes_group.grid(column=0, row=0, sticky="nsew")
 		self.lblfrm_change_group.configure(height=200, text="Groups", width=200)
-		self.lblfrm_change_group.grid(column=0, padx=10, pady=10, row=0, sticky="nsew")
+		self.lblfrm_change_group.grid(column=2, padx=10, pady=10, row=0, sticky="nsew")
 		self.lblfrm_change_group.rowconfigure(0, weight=1)
 		self.lblfrm_change_group.columnconfigure(0, minsize=150, pad=10, weight=1)
 		self.lblfrm_change_tags = ttk.Labelframe(self.lblfrm_summary)
 		self.nb_change_tags = ttk.Notebook(self.lblfrm_change_tags)
-
-
-
 		self.frame1 = ttk.Frame(self.nb_change_tags)
-
 		self.label14 = ttk.Label(self.frame1)
 		self.label14.configure(anchor="center", text="Added")
 		self.label14.grid(column=0, row=0, sticky="ew")
-
 		self.label15 = ttk.Label(self.frame1)
 		self.label15.configure(anchor="center", text="Removed")
 		self.label15.grid(column=1, row=0, sticky="ew")
-
 		self.listbox1 = tk.Listbox(self.frame1)
 		self.listbox1.grid(column=0, row=1)
-
 		self.listbox2 = tk.Listbox(self.frame1)
 		self.listbox2.grid(column=1, row=1)
-
 		self.frame1.configure(height=200, padding=10, width=200)
 		self.frame1.grid(column=0, row=0, sticky="nsew")
 		self.frame1.rowconfigure(1, weight=1)
 		self.frame1.columnconfigure(0, weight=1)
 		self.frame1.columnconfigure(1, weight=1)
-
 		self.nb_change_tags.add(self.frame1, text="Mng")
 		self.nb_change_tags.configure(height=200, width=200)
 		self.nb_change_tags.grid(column=0, row=0, sticky="nsew")
-
-
 		self.lblfrm_change_tags.configure(height=200, text="Changed Tags", width=200)
-		self.lblfrm_change_tags.grid(column=1, padx=10, pady=10, row=0, sticky="nsew")
+		self.lblfrm_change_tags.grid(column=1, padx=10, pady=10, row=0)
 		self.lblfrm_change_vars = ttk.Labelframe(self.lblfrm_summary)
 		self.label16 = ttk.Label(self.lblfrm_change_vars)
 		self.label16.configure(anchor="center", text="Added")
@@ -236,14 +239,7 @@ class GUINewCSV:
 		self.lsb_change_removed.grid(column=1, padx=10, pady=10, row=1, sticky="nsew")
 		self.lblfrm_change_vars.configure(height=200, text="Variables", width=200)
 		self.lblfrm_change_vars.grid(
-			column=2,
-			columnspan=2,
-			ipadx=10,
-			ipady=10,
-			padx=10,
-			pady=10,
-			row=0,
-			sticky="nsew",
+			column=0, ipadx=10, ipady=10, padx=10, pady=10, row=0
 		)
 		self.lblfrm_change_vars.rowconfigure(1, weight=1)
 		self.lblfrm_change_vars.columnconfigure(0, weight=1)
@@ -254,6 +250,7 @@ class GUINewCSV:
 		)
 		self.lblfrm_summary.rowconfigure(0, weight=1)
 		self.lblfrm_summary.rowconfigure(1, weight=1)
+		self.lblfrm_summary.columnconfigure(0, weight=1)
 		self.lblfrm_summary.columnconfigure(1, weight=1)
 		self.lblfrm_summary.columnconfigure(2, weight=1)
 		self.frm_botbuttons = ttk.Frame(self.frm_replacetop)
@@ -491,12 +488,6 @@ class GUINewCSV:
 		if self._previewReady == False:
 			return
 		
-		# Group Changes
-		groupchange_str = \
-			f"Changed:\n" + ", ".join(self._changesGroups[ChangeOptions.KEPT]) + "\n\n" + \
-			f"New:\n" + ", ".join(self._changesGroups[ChangeOptions.ADDED]) + "\n\n" + \
-			f"Removed:\n" + ", ".join(self._changesGroups[ChangeOptions.REMOVED])
-		self.lbl_changes_group.configure(text=groupchange_str)
 
 		# Tag Member Changes
 		changedgroups = self._changesTag.keys()
@@ -530,6 +521,59 @@ class GUINewCSV:
 
 			self.nb_change_tags.add(nb_tab, text=group)
 		
+
+		# Group Changes
+		groupchange_str = ''
+
+		change_name_dict = {
+			ChangeOptions.KEPT: 'Changed: ',
+			ChangeOptions.ADDED: 'New: ',
+			ChangeOptions.REMOVED: 'Removed: '
+		}
+
+		for option in self._changesGroups.keys():
+			changesList = self._changesGroups[option]
+			if len(changesList) == 0:
+				continue
+			groupchange_str += change_name_dict[option] + ", ".join(changesList)
+			groupchange_str += "\n" * 2
+		
+		# If any group has all its variables removed, all constraints are cleared.
+		# This happens by
+		#   (1) Removing an existing group
+		#   (2) Keeping a group but removing all variables
+
+		rem_groups = self._changesGroups[ChangeOptions.REMOVED]
+		join_str = '\n * '
+		if len(rem_groups):
+			groupchange_str += "\n[[ WARNING ]]: All constraint will be cleared\n"
+			if len(rem_groups) == 1:
+				groupchange_str +=  f"Existing group: {join_str.join([''] + rem_groups)}\n is being removed"
+			else:
+				groupchange_str +=  f"Existing groups: {join_str.join([''] + rem_groups)}\n are being removed"
+		else:
+			# Check for the changes within groups
+			cleared_groups: List[str] = []
+
+			for group in self._changesGroups[ChangeOptions.KEPT]:
+				num_removed = len(self._changesTag[group][DifferenceOptions.REMOVED])
+				num_existing = len(self._passedProjectState.varData.tag_members[group])
+
+				# If we find a single offending group we write 
+				if num_removed >= num_existing:
+					cleared_groups.append(group)
+
+			if len(cleared_groups) != 0:
+				groupchange_str += f"\n[[ WARNING ]]: All constraints will be cleared\n"
+				if len(cleared_groups) == 1:
+					groupchange_str += f"Group: {join_str.join([''] + cleared_groups)}\nis being completely reset.\nNo old values are being transferred."
+				else:
+					groupchange_str += f"Groups: {join_str.join([''] + cleared_groups)}\nare being completely reset.\nNo old values are being transferred."
+
+		self.lbl_changes_group.configure(text=groupchange_str)
+
+
+
 		# Variable Changes
 		addedvarslist = self._changesVars[DifferenceOptions.ADDED]
 		addedvarslist.sort()
@@ -538,6 +582,9 @@ class GUINewCSV:
 		removedvarslist = self._changesVars[DifferenceOptions.REMOVED]
 		removedvarslist.sort()
 		var_remvar = tk.StringVar(value=removedvarslist)
+
+		self.label16.configure(text=f"Added ({len(addedvarslist)})")
+		self.label17.configure(text=f"Removed ({len(removedvarslist)})")
 
 		self.lsb_change_vars_added.configure(listvariable=var_addvar)
 		self.lsb_change_removed.configure(listvariable=var_remvar)
