@@ -209,6 +209,10 @@ def redrawSummaryStats ():
 	
 	allVars = _passedProjectState.varData.all_vars
 
+	allConNames = [x.namePrefix for x in _passedProjectState.setupList]
+	duplicateConCames = [x for x in allConNames if allConNames.count(x) > 1]
+	duplicateConCames = list(set(duplicateConCames))
+
 	unconVars = set(map(lambda x: "_".join(x), allVars)) - set(map(lambda x: "_".join(x), _varsConstrainted))
 	unconVars = list(unconVars)
 
@@ -223,6 +227,13 @@ def redrawSummaryStats ():
 	summaryStr += f'Variables Used: {totVarsUsed}\n'
 	summaryStr += f'Variables Not Used: {totUnConVars}'
 
+	# display duplicate named constraint groups
+	if len(duplicateConCames) != 0:
+		summaryStr += "\n\n"
+		summaryStr += f"Duplicate Constriant Names:\n"
+		summaryStr += ", ".join(duplicateConCames)
+
+	# display unconstrained variables
 	if len(unconVars) != 0:
 		summaryStr += "\n\n"
 
@@ -235,7 +246,6 @@ def redrawSummaryStats ():
 
 	# Update
 	_lblSummary.configure(text=summaryStr)
-
 
 
 
