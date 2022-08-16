@@ -479,7 +479,6 @@ class GUINewCSV:
 			return
 
 		# Stage 2 - Naming Items
-		# print(f"Error: {self._errWithNamesList}")
 		if self._errWithNamesList != None:
 			self.msg_import_err.configure(text=self._errWithNamesList)
 			self.msg_import_err.grid(column=0, columnspan=3, pady=10, row=2)
@@ -489,7 +488,6 @@ class GUINewCSV:
 		self.btn_import_preview['style'] = ''
 
 		# Stage 3 - Changes
-		print("Time to change")
 		if self._previewReady == False:
 			return
 		
@@ -502,7 +500,6 @@ class GUINewCSV:
 
 		# Tag Member Changes
 		changedgroups = self._changesTag.keys()
-		print(changedgroups)
 		for group in changedgroups:
 			addedvar = tk.StringVar()
 			addedvarslist = self._changesTag[group][DifferenceOptions.ADDED]

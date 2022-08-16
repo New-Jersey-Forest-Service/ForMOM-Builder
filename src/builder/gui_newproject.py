@@ -234,8 +234,8 @@ def redrawNamingFrame(tagLists: List[List[str]]) -> None:
 def redrawNamingStatus(inputNames: List[str]) -> None:
 	global _lblVerifyNames, _errWithNamesList, _errWithObjFile
 
-	print(f" > Redrawing Naming status: {_errWithObjFile}")
-	print(f" > {inputNames}")
+	# print(f" > Redrawing Naming status: {_errWithObjFile}")
+	# print(f" > {inputNames}")
 
 	if inputNames == None or _errWithObjFile != None:
 		_lblVerifyNames['text'] = ''

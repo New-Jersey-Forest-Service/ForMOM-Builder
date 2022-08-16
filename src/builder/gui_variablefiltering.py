@@ -75,7 +75,7 @@ def updateGeneralConstrInfo() -> None:
 	'''
 	global _errWithGeneralInfo, _constrGroupSetup
 
-	print(" > In update general constr info")
+	# print(" > In update general constr info")
 
 	_errWithGeneralInfo = None
 
@@ -91,7 +91,8 @@ def updateGeneralConstrInfo() -> None:
 	selector = _cbbOpSelector.get().strip()
 	compType = models.ComparisonSign.fromSybols(selector)
 	if compType == None:
-		print(f'[[ !! Warning ]] Found illegal comparison selector option: "{selector}"')
+		# print(f'[[ !! Warning ]] Found illegal comparison selector option: "{selector}"')
+		pass
 	else:
 		_constrGroupSetup.defComp = compType
 	
@@ -128,8 +129,8 @@ def updateGeneralConstrInfo() -> None:
 		status = _splitVarDict[tag].get()
 		if status == '1':
 			splitBys.append(tag)
-		elif status != '0':
-			print(f"[[ !! Warning ]] Illegal state of checkbox string var found: {status}")
+		# elif status != '0':
+		# 	print(f"[[ !! Warning ]] Illegal state of checkbox string var found: {status}")
 	_constrGroupSetup.splitBy = splitBys
 
 	redrawForUpdate()
@@ -243,7 +244,7 @@ def redrawIncExcLists ():
 def redrawPreviewBox ():
 	global _txtConstPreview
 
-	print("(from gui) Redrawing preview box")
+	# print("(from gui) Redrawing preview box")
 
 	constrStr = None
 	

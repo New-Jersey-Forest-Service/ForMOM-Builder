@@ -74,7 +74,7 @@ def renderConstraintGroup (group: models.ConstraintGroup, delim: str, charwidth:
 	eqs = group.equations[:NUM_EQS]
 
 	# print(f"In render method. # Eqs: {len(eqs)}, Eqs: {eqs}")
-	print(f"In render method. # Eqs: {len(eqs)}")
+	# print(f"In render method. # Eqs: {len(eqs)}")
 
 	if len(eqs) == 0:
 		return "No Constraints Exist"

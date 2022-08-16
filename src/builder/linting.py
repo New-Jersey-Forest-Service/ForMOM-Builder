@@ -164,11 +164,11 @@ def fixupIllegalProjectState (projState: models.ProjectState) -> models.ProjectS
 		for group in tagGroups:
 			for tag in leftTags[group]:
 				if tag not in acceptableTags[group]:
-					print(f"Found left tag to remove: {tag} from {group} in {constr.namePrefix}")
+					# print(f"Found left tag to remove: {tag} from {group} in {constr.namePrefix}")
 					newProjState.setupList[ind].selLeftTags[group].remove(tag)
 			for tag in rightTags[group]:
 				if tag not in acceptableTags[group]:
-					print(f"Found right tag to remove: {tag} from {group} in {constr.namePrefix}")
+					# print(f"Found right tag to remove: {tag} from {group} in {constr.namePrefix}")
 					newProjState.setupList[ind].selRightTags[group].remove(tag)
 	
 

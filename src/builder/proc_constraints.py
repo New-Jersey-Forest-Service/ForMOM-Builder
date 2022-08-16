@@ -218,9 +218,9 @@ def change_varsdata (newVarData: models.VarsData, projectstate: models.ProjectSt
 				set(newVarData.tag_members[tagGroup])
 				)
 
-			print(f"Const: {const.namePrefix}")
-			print(f"Removed: {list(removedTags)}")
-			print()
+			# print(f"Const: {const.namePrefix}")
+			# print(f"Removed: {list(removedTags)}")
+			# print()
 
 			transferedLeft = []
 			for x in const.selLeftTags[tagGroup]:
