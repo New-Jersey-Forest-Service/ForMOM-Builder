@@ -1,4 +1,9 @@
+'''
+proc_linting.py
 
+This file contains functions that check data and user input
+for errors and warnings.
+'''
 from copy import deepcopy
 from typing import List, Dict, Set
 import re
@@ -79,7 +84,7 @@ def lintTagGroupName (tagName: str) -> str:
 
 def lintAllTagGroupNames (listTagNames: List[str]) -> str:
 	'''
-	Checks a list of tag names instead of a single one (like lintTagGroupName)
+	Checks a list of tag names instead of a single one (like lintTagGroupName).
 	'''
 	# [[ Check ]] There are at least some names
 	if len(listTagNames) == 0:
@@ -124,7 +129,11 @@ def lintConstrGroupName (groupName: str) -> str:
 				return f'Invalid groupname "{groupName}". Illegal character "{c}"'
 
 
+# TODO: Currently this is not being used
 def lintAllConstrGroupNames (listGroupNames: List[str]) -> str:
+	'''
+	Checks that all constraint group names are valid
+	'''
 	# [[ Check ]] All groups named
 	for ind, name in enumerate(listGroupNames):
 		if name == None or name == '':

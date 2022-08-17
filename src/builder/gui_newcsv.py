@@ -18,7 +18,7 @@ from enum import Enum, auto
 
 import builder.models as models
 import builder.proc_constraints as proc
-import builder.linting as lint
+import builder.proc_linting as lint
 import builder.proc_render as render
 import builder.io_file as io_file
 import builder.gui_projectoverview as gui_projectoverview
@@ -308,7 +308,7 @@ class GUINewCSV:
 			self._delimiter,
 			self._groupnameList
 		)
-		self._passedProjectState = proc.change_varsdata(newVarsData, self._passedProjectState)
+		self._passedProjectState = proc.changeVarsData(newVarsData, self._passedProjectState)
 		self._transition_to_overview()
 
 	def onbtn_bot_cancel(self):

@@ -8,7 +8,7 @@ from typing import Dict, List
 
 import builder.proc_constraints as proc
 import builder.gui_projectoverview as gui_projectoverview
-import builder.linting as lint
+import builder.proc_linting as lint
 import builder.models as models
 import builder.devtesting as devtesting
 import builder.proc_render as render

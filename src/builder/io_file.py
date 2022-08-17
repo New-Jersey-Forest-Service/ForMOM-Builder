@@ -1,7 +1,9 @@
 '''
 File IO
 
-Every (non-trivial) file write, read, validation should come through here
+Non-trivial file writes, reads, and validations lives here.
+
+Also deals with some tkinter weirdness of multiple return types.
 '''
 
 from pathlib import Path
@@ -108,6 +110,11 @@ def readVarnamesRaw (objCSVPath: Path, numVars=-1) -> List[str]:
 #
 
 def writeToCSV (filepath: str, projState: models.ProjectState):
+	'''
+	Converts the project state into a constraint .csv
+	
+	This is how projects get exported
+	'''
 	with open(filepath, 'w', endline='') as outFile:
 		writer = csv.writer(outFile)
 

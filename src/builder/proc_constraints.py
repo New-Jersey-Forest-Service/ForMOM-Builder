@@ -1,11 +1,11 @@
 '''
 Constraint Processor
 
-This file does the actual processing:
- - generating constraint classes
- - reading files
- - saving to custom format
-
+This file does processing with constraints
+ - Generating constraint classes from user input
+ - Converting some formats between each other
+ - Modifying projectstate
+ - Reading projectstate from files
 
 Michael Gorbunov
 NJDEP / NJFS
@@ -19,7 +19,7 @@ import itertools
 import builder.models as models
 import builder.io_cmd as io_cmd
 import builder.io_file as io_file
-import builder.linting as lint
+import builder.proc_linting as lint
 
 
 # TODO:
@@ -69,6 +69,8 @@ def makeTagGroupMembersList (varnamesRaw: List[str], delim: str) -> List[List[st
 
 def buildVarDataObject (varnamesRaw: List[str], delim: str, tagGroupNames: List[str]) -> models.VarsData:
 	'''
+		Builds a varData object with the given user input.
+
 		DOES NOT LINT. Make sure to call the linting functions before passing into this.
 		With poor data, this will throw an error (or worse, fail silently)
 	'''
@@ -90,7 +92,8 @@ def buildVarDataObject (varnamesRaw: List[str], delim: str, tagGroupNames: List[
 
 def buildConstraintGroup (groupSetup: models.SetupConstraintGroup, varData: models.VarsData) -> models.ConstraintGroup:
 	'''
-	Generates a constraint group, which holds the actual equations.
+	Generates a constraint group, which holds the actual equations, from the 
+	specification of a SetupConstraintGroup.
 
 	Takes a setup object (SetupConstraintGroup), and a varData object.
 	'''
@@ -191,7 +194,11 @@ def getNumConstraints (setup: models.SetupConstraintGroup, varData: models.VarsD
 	return len(buildConstraintGroup(setup, varData).equations)
 
 
-def change_varsdata (newVarData: models.VarsData, projectstate: models.ProjectState) -> models.ProjectState:
+def changeVarsData (newVarData: models.VarsData, projectstate: models.ProjectState) -> models.ProjectState:
+	'''
+	Given a new varData (eg: new objective file), will update projectState and
+	all of its constraintGroups so they use new variables only.
+	'''
 	oldVarData = projectstate.varData
 	newstate: models.ProjectState = models.ProjectState(
 		varData=newVarData,
@@ -317,14 +324,13 @@ def readProjectStateFile (filepath: str) -> Union[models.ProjectState, str]:
 
 
 if __name__ == '__main__':
-
-	import devtesting
-	devtesting.dummyProjectState()
-
+	import builder.devtesting as devtesting
+	import json
+	import cattrs
+	from pprint import pprint
 
 	# Input
-	# objCSVPath = io_cmd.getCSVFilepath("Objective File: ")
-	objCSVPath = './sample_data/minimodel_obj.csv'
+	objCSVPath = '/home/velcro/Documents/Professional/NJDEP/TechWork/ForMOM-Builder/sample-data/obj_minimodel_diff.csv'
 
 	varnamesRaw = io_file.readVarnamesRaw(objCSVPath)
 	# delim = input(f"Sample Var '{varnamesRaw[0]}' | Delimiter: ")
@@ -351,26 +357,28 @@ if __name__ == '__main__':
 	selectedLeft = {
 		'for_type': ['167N', '167S'],
 		'year': ['2030', '2050'],
-		'mng': ['SPB', 'WFNM', 'STQO']
+		'mng': ['STQO', 'PLSQ']
 	}
 
 	selectedRight = {
-		'for_type': ['167N', '409'],
+		'for_type': ['167N', '505'],
 		'year': ['2021', '2025'],
-		'mng': ['SPB', 'WFNM', 'STQO']
+		'mng': ['IFM', 'THNB']
 	}
 
 	setupConstr.selLeftTags = selectedLeft
 	setupConstr.selRightTags = selectedRight
 
-	print(f"Setup: \n{setupConstr}\n")
+	print(f"Setup:")
+	print(models.toOutputStr(setupConstr, models.SetupConstraintGroup, pretty=True))
 
 	# Processing
 	actualConstraint = buildConstraintGroup(setupConstr, varInfo)
 
 	print("\n\n")
 	for eq in actualConstraint.equations:
-		print(eq, end="\n===\n")
+		print("\n ======")
+		print(eq)
 	print(f"Constr: \n{actualConstraint}\n")
 
 

@@ -1,5 +1,8 @@
 '''
-Constraint Builder Objective File Import
+New Project Screen
+
+This screen shows up when a new project is being created.
+It prompts the user for the objective file and constructs a varData object.
 '''
 
 import math
@@ -12,7 +15,7 @@ from typing import List
 import builder.proc_constraints as proc
 import builder.gui_projectoverview as gui_projectoverview
 import builder.io_file as io_file
-import builder.linting as lint
+import builder.proc_linting as lint
 import builder.models as models
 import builder.devtesting as devtesting
 import builder.proc_render as render

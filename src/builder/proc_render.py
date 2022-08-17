@@ -34,6 +34,15 @@ def trimEllipsisRight (baseStr: str, maxLen: int) -> str:
 
 
 def renderSingleEq (eq: models.Equation, delim: str, charwidth:int=-1) -> str:
+	'''
+	From an equation, generates a string to preview the equation.
+
+	Currently, charwidth does nothing.
+
+	example:
+	unnamed_full_167N_2021_PLSQ
+	2*167N_2021_PLSQ == 167N_2021_PLSQ + 10.0
+	'''
 	leftVarsStr = _renderVarsString(eq.leftVars, eq.leftCoefs, delim)
 	rightVarStr = _renderVarsString(eq.rightVars, eq.rightCoefs, delim)
 
@@ -50,6 +59,10 @@ def renderSingleEq (eq: models.Equation, delim: str, charwidth:int=-1) -> str:
 
 
 def _renderVarsString (varTags: List[List[str]], varCoefs: List[float], delim: str) -> str:
+	'''
+	Combines a list of variables with a list of coefficients.
+	Aka, generate half an equation.
+	'''
 	varStrs: List[str] = [delim.join(tags) for tags in varTags]
 	coefVarStrs: List[str] = []
 
@@ -70,6 +83,9 @@ def _renderVarsString (varTags: List[List[str]], varCoefs: List[float], delim: s
 		
 		
 def renderConstraintGroup (group: models.ConstraintGroup, delim: str, charwidth:int=-1) -> str:
+	'''
+	Renders a preview for a full constraint group
+	'''
 	NUM_EQS = 5
 	eqs = group.equations[:NUM_EQS]
 
