@@ -115,7 +115,7 @@ def writeToCSV (filepath: str, projState: models.ProjectState):
 	
 	This is how projects get exported
 	'''
-	with open(filepath, 'w', endline='') as outFile:
+	with open(filepath, 'w', newline='') as outFile:
 		writer = csv.writer(outFile)
 
 		delim = projState.varData.delim

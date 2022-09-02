@@ -170,9 +170,9 @@ class SetupConstraintGroup:
 			namePrefix="unnamed",
 			splitBy=[],
 			defComp=ComparisonSign.EQ,
-			defLeftCoef=2.0,
+			defLeftCoef=1.0,
 			defRightCoef=1.0,
-			defConstant=10,
+			defConstant=0,
 			selLeftTags=selectedTags,
 			selRightTags=deepcopy(selectedTags)
 		)
