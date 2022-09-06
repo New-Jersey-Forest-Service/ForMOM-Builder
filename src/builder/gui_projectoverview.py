@@ -167,20 +167,29 @@ def redrawConstrListFrame (constrGroupList: List[models.SetupConstraintGroup]) -
 	for child in _frmConstrsDisplay.winfo_children():
 		child.destroy()
 
-	CONSTRS_PER_ROW = 3
+	CONSTRS_PER_ROW = 5
+	ALTERNATING_COLORS = ['#BBBBBB', '#EAEAEA']
 	_frmConstrsDisplay.columnconfigure([x for x in range(CONSTRS_PER_ROW)], weight=1)
 
 	# Render everything
 	for ind, constrGroup in enumerate(constrGroupList):
+		_row = ind // CONSTRS_PER_ROW
+		_col = ind % CONSTRS_PER_ROW
+
 		frmConstr = tk.Frame(_frmConstrsDisplay, relief=tk.RIDGE, bd=2)
 		frmConstr.grid(
-			row=ind//CONSTRS_PER_ROW, 
-			column=ind%CONSTRS_PER_ROW, 
+			row=_row,
+			column=_col,
 			sticky="ew", 
 			pady=(0, 10),
 			padx=5
 			)
 		frmConstr.columnconfigure(1, weight=1)
+
+		if _row % 2 == 1:
+			frmConstr.configure(bg=ALTERNATING_COLORS[0])
+		else:
+			frmConstr.configure(bg=ALTERNATING_COLORS[1])
 		
 		name = render.trimEllipsisRight(constrGroup.namePrefix, WIDTH_BIG)
 		lblName = tk.Label(frmConstr, text=name)
