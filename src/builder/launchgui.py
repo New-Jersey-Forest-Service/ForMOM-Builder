@@ -9,12 +9,12 @@ import pathlib
 import tkinter as tk
 from tkinter import ttk
 
-import gui_mainmenu
-import models
+import builder.gui_mainmenu as gui_mainmenu
+import builder.models as models
 
 
 def main():
-	print("Hi")
+	print("Get ready to build some constraints...")
 	# Very important to instantiate the object so it can be passed arround
 	projectState = models.ProjectState.createEmptyProjectState()
 
@@ -25,6 +25,7 @@ def main():
 	# Load Theme info
 	# The forest theme honestly just seems too bright with a GUI not designed for it
 	# If I ever redesign the program then I'll use it but for now nah
+
 	# style = ttk.Style(root)
 	# themepath = pathlib.Path(__file__).parent.joinpath('../theme/forest-light.tcl').absolute()
 	# root.tk.call("source", themepath)
@@ -38,6 +39,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-else:
-	print("[[ ERROR ]] This file is not meant to be imported")
-	num = 1 / 0

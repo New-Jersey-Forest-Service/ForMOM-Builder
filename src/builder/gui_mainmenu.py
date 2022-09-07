@@ -8,11 +8,12 @@ import tkinter as tk
 import tkinter.messagebox as tkmsg
 from tkinter import ttk
 
-import gui_newproject
-import gui_projectoverview
-import io_file
-import models
-from gui_consts import *
+import builder.gui_newproject as gui_newproject
+import builder.gui_projectoverview as gui_projectoverview
+import builder.io_file as io_file
+import builder.models as models
+import builder.proc_constraints as proc
+from builder.gui_consts import *
 
 _passedProjectState: models.ProjectState = None
 _passedRoot: tk.Tk = None
@@ -36,7 +37,7 @@ def updateLoadProj():
 	global _passedProjectState
 
 	projFilepath: str = io_file.getOpenFilepath(PROJ_FILES)
-	newProjState, err = models.readProjectStateFile(projFilepath)
+	newProjState, err = proc.readProjectStateFile(projFilepath)
 
 	if err != None:
 		tkmsg.showerror(
@@ -102,8 +103,6 @@ def buildGUI_OpeningScreen(root: tk.Tk, projectState: models.ProjectState):
 
 	frmOptions = tk.Frame(root)
 	frmOptions.grid(row=1, column=0, sticky="")
-	# frmOptions.rowconfigure([0, 1], weight=1)
-	# frmOptions.columnconfigure(0, weight=1)
 
 	btnNewProj = tk.Button(frmOptions, text="New Constraint Project", command=updateNewProj)
 	btnNewProj.grid(row=0, column=0, sticky="ew", pady=5)
@@ -112,7 +111,7 @@ def buildGUI_OpeningScreen(root: tk.Tk, projectState: models.ProjectState):
 	btnLoadProj.grid(row=1, column=0, sticky="ew", pady=5)
 
 
-	lblSubInfo = tk.Label(root, text="ForMOM Project\nDev: Michael Gorbunov\nTest: Courtney Willits, Bill Zipse", anchor="e", justify="right")
+	lblSubInfo = tk.Label(root, text="ForMOM Project\nDev: Michael Gorbunov, Bill Zipse\nTest & QA: Courtney Willits, Lauren Gazerwitz, \nBen Pisano, Justin Gillmero", anchor="e", justify="right")
 	lblSubInfo.grid(row=2, column=0, sticky="se", padx=20, pady=(0, 20))
 
 

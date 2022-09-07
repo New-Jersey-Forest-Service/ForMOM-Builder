@@ -292,6 +292,7 @@ Sometimes it really be like that :/</property>
           <property name="sticky">nsew</property>
         </layout>
         <containerlayout manager="grid">
+          <property type="col" id="0" name="weight">1</property>
           <property type="col" id="1" name="weight">1</property>
           <property type="col" id="2" name="weight">1</property>
           <property type="row" id="0" name="weight">1</property>
@@ -303,7 +304,7 @@ Sometimes it really be like that :/</property>
             <property name="text" translatable="yes">Groups</property>
             <property name="width">200</property>
             <layout manager="grid">
-              <property name="column">0</property>
+              <property name="column">2</property>
               <property name="padx">10</property>
               <property name="pady">10</property>
               <property name="row">0</property>
@@ -342,7 +343,6 @@ Changed: mng, for_type</property>
               <property name="padx">10</property>
               <property name="pady">10</property>
               <property name="row">0</property>
-              <property name="sticky">nsew</property>
             </layout>
             <child>
               <object class="ttk.Notebook" id="nb_change_tags">
@@ -423,14 +423,12 @@ Changed: mng, for_type</property>
             <property name="text" translatable="yes">Variables</property>
             <property name="width">200</property>
             <layout manager="grid">
-              <property name="column">2</property>
-              <property name="columnspan">2</property>
+              <property name="column">0</property>
               <property name="ipadx">10</property>
               <property name="ipady">10</property>
               <property name="padx">10</property>
               <property name="pady">10</property>
               <property name="row">0</property>
-              <property name="sticky">nsew</property>
             </layout>
             <containerlayout manager="grid">
               <property type="col" id="0" name="weight">1</property>

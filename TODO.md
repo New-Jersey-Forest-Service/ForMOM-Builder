@@ -1,13 +1,12 @@
 
+
+## Ideas
+ - [ ] Store everything in an SQL database => Allow for far more easily customizable querying (even R support?)
+ - [ ] Don't have file versioning
+
+
+
 ## Overall Goal
-What needs to happen rn
-
-
-Main -> Create
-    |       |
-   \/      \/
-Project Overview <\-> Constraint Builder
-
 
 Other
  - [ ] Get the outputs from all the fvs runs

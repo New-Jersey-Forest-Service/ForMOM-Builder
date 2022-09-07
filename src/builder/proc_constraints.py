@@ -1,11 +1,11 @@
 '''
 Constraint Processor
 
-This file does the actual processing:
- - generating constraint classes
- - reading files
- - saving to custom format
-
+This file does processing with constraints
+ - Generating constraint classes from user input
+ - Converting some formats between each other
+ - Modifying projectstate
+ - Reading projectstate from files
 
 Michael Gorbunov
 NJDEP / NJFS
@@ -13,13 +13,13 @@ Started 05/21/2022
 '''
 
 from copy import deepcopy
-import models
-from typing import List, Dict
+from typing import List, Dict, Union
 import itertools
 
-import io_cmd
-import io_file
-import linting as lint
+import builder.models as models
+import builder.io_cmd as io_cmd
+import builder.io_file as io_file
+import builder.proc_linting as lint
 
 
 # TODO:
@@ -69,6 +69,8 @@ def makeTagGroupMembersList (varnamesRaw: List[str], delim: str) -> List[List[st
 
 def buildVarDataObject (varnamesRaw: List[str], delim: str, tagGroupNames: List[str]) -> models.VarsData:
 	'''
+		Builds a varData object with the given user input.
+
 		DOES NOT LINT. Make sure to call the linting functions before passing into this.
 		With poor data, this will throw an error (or worse, fail silently)
 	'''
@@ -88,8 +90,14 @@ def buildVarDataObject (varnamesRaw: List[str], delim: str, tagGroupNames: List[
 	)
 
 
-# I apologize to future me if I ever have to refactor this :(
 def buildConstraintGroup (groupSetup: models.SetupConstraintGroup, varData: models.VarsData) -> models.ConstraintGroup:
+	'''
+	Generates a constraint group, which holds the actual equations, from the 
+	specification of a SetupConstraintGroup.
+
+	Takes a setup object (SetupConstraintGroup), and a varData object.
+	'''
+	# I apologize to future me if I ever have to refactor this, this is a tad convoluted ...
 	delim: str = varData.delim
 
 	# Generate all applicable variables
@@ -177,14 +185,29 @@ def buildConstraintGroup (groupSetup: models.SetupConstraintGroup, varData: mode
 	)
 
 
+def getNumConstraints (setup: models.SetupConstraintGroup, varData: models.VarsData) -> int:
+	'''
+	Returns how many constraints exist in the setup object.
+
+	This is done by actually building the constriant group object.
+	'''
+	return len(buildConstraintGroup(setup, varData).equations)
 
 
-def change_varsdata (newVarData: models.VarsData, projectstate: models.ProjectState) -> models.ProjectState:
+def changeVarsData (newVarData: models.VarsData, projectstate: models.ProjectState) -> models.ProjectState:
+	'''
+	Given a new varData (eg: new objective file), will update projectState and
+	all of its constraintGroups so they use new variables only.
+	'''
 	oldVarData = projectstate.varData
 	newstate: models.ProjectState = models.ProjectState(
 		varData=newVarData,
 		setupList=[]
 	)
+
+	newGroups = list(set(newVarData.tag_order) - set(oldVarData.tag_order))
+	sameGroups = list(set(newVarData.tag_order).intersection(set(oldVarData.tag_order)))
+
 
 	for const in projectstate.setupList:
 		newsplits = []
@@ -193,8 +216,6 @@ def change_varsdata (newVarData: models.VarsData, projectstate: models.ProjectSt
 				newsplits.append(x)
 
 		# Transfer over the tags that stayed the same
-		newGroups = list(set(newVarData.tag_order) - set(oldVarData.tag_order))
-		sameGroups = list(set(newVarData.tag_order).intersection(set(oldVarData.tag_order)))
 		newLeftTags = {}
 		newRightTags = {}
 
@@ -203,6 +224,10 @@ def change_varsdata (newVarData: models.VarsData, projectstate: models.ProjectSt
 				set(oldVarData.tag_members[tagGroup]) - 
 				set(newVarData.tag_members[tagGroup])
 				)
+
+			# print(f"Const: {const.namePrefix}")
+			# print(f"Removed: {list(removedTags)}")
+			# print()
 
 			transferedLeft = []
 			for x in const.selLeftTags[tagGroup]:
@@ -239,20 +264,73 @@ def change_varsdata (newVarData: models.VarsData, projectstate: models.ProjectSt
 
 
 
+#
+# Working with the model
+#
+
+
+_model_versions = [
+	models.ProjectState,
+	models.ProjectState_V0_0
+]
+
+def readProjectStateFile (filepath: str) -> Union[models.ProjectState, str]:
+	'''
+	Attempts to read the project file at the filepath.
+
+	If reading an older project file, will convert up
+	to a more recent version.
+
+	Returns None and an error message if unsuccesful.
+	'''
+	fileData = None
+	try:
+		with open(filepath, 'r') as file:
+			fileData = file.read()
+	except:
+		pass
+
+	if fileData == None:
+		return None, "Unable to read file"
+	
+	# See if the data is in fact a model file
+	model = None
+	for m in _model_versions:
+		try:
+			model = models.fromOutputStr(fileData, m)
+		except:
+			continue
+	
+	if model == None:
+		return None, "Not a valid project file, unable to parse"
+	
+	# Cast the model up
+	while not isinstance(model, models.ProjectState):
+		_prevModel = model
+		model = model.convertUp()
+
+		if _prevModel == model:
+			return None, "Conversion code is messed up"
+
+	# Fix Up
+	model = lint.fixupIllegalProjectState(model)
+
+	return model, None
+	
+
 
 
 
 
 
 if __name__ == '__main__':
-
-	import devtesting
-	devtesting.dummyProjectState()
-
+	import builder.devtesting as devtesting
+	import json
+	import cattrs
+	from pprint import pprint
 
 	# Input
-	# objCSVPath = io_cmd.getCSVFilepath("Objective File: ")
-	objCSVPath = './sample_data/minimodel_obj.csv'
+	objCSVPath = '/home/velcro/Documents/Professional/NJDEP/TechWork/ForMOM-Builder/sample-data/obj_minimodel_diff.csv'
 
 	varnamesRaw = io_file.readVarnamesRaw(objCSVPath)
 	# delim = input(f"Sample Var '{varnamesRaw[0]}' | Delimiter: ")
@@ -279,26 +357,28 @@ if __name__ == '__main__':
 	selectedLeft = {
 		'for_type': ['167N', '167S'],
 		'year': ['2030', '2050'],
-		'mng': ['SPB', 'WFNM', 'STQO']
+		'mng': ['STQO', 'PLSQ']
 	}
 
 	selectedRight = {
-		'for_type': ['167N', '409'],
+		'for_type': ['167N', '505'],
 		'year': ['2021', '2025'],
-		'mng': ['SPB', 'WFNM', 'STQO']
+		'mng': ['IFM', 'THNB']
 	}
 
 	setupConstr.selLeftTags = selectedLeft
 	setupConstr.selRightTags = selectedRight
 
-	print(f"Setup: \n{setupConstr}\n")
+	print(f"Setup:")
+	print(models.toOutputStr(setupConstr, models.SetupConstraintGroup, pretty=True))
 
 	# Processing
 	actualConstraint = buildConstraintGroup(setupConstr, varInfo)
 
 	print("\n\n")
 	for eq in actualConstraint.equations:
-		print(eq, end="\n===\n")
+		print("\n ======")
+		print(eq)
 	print(f"Constr: \n{actualConstraint}\n")
 
 

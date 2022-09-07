@@ -1,6 +1,13 @@
+'''
+proc_linting.py
 
-from typing import List, Dict
+This file contains functions that check data and user input
+for errors and warnings.
+'''
+from copy import deepcopy
+from typing import List, Dict, Set
 import re
+import builder.models as models
 
 
 
@@ -77,7 +84,7 @@ def lintTagGroupName (tagName: str) -> str:
 
 def lintAllTagGroupNames (listTagNames: List[str]) -> str:
 	'''
-	Checks a list of tag names instead of a single one (like lintTagGroupName)
+	Checks a list of tag names instead of a single one (like lintTagGroupName).
 	'''
 	# [[ Check ]] There are at least some names
 	if len(listTagNames) == 0:
@@ -122,7 +129,11 @@ def lintConstrGroupName (groupName: str) -> str:
 				return f'Invalid groupname "{groupName}". Illegal character "{c}"'
 
 
+# TODO: Currently this is not being used
 def lintAllConstrGroupNames (listGroupNames: List[str]) -> str:
+	'''
+	Checks that all constraint group names are valid
+	'''
 	# [[ Check ]] All groups named
 	for ind, name in enumerate(listGroupNames):
 		if name == None or name == '':
@@ -138,3 +149,79 @@ def lintAllConstrGroupNames (listGroupNames: List[str]) -> str:
 	if len(set(listGroupNames)) != len(listGroupNames):
 		duplicates = set([x for x in listGroupNames if listGroupNames.count(x) > 1])
 		return f'Found duplicate group names {duplicates}'
+
+
+def fixupIllegalProjectState (projState: models.ProjectState) -> models.ProjectState:
+	'''
+	Will do a couple checks for potential illegal project states, and return a better object.
+
+	Creates copy, does NOT mutate.
+
+	This does NOT guarantee valid state, if you pass garbage in you will get 
+	slightly polished garbage out, but still garbage.
+	'''
+	newProjState = deepcopy(projState)
+
+	# [[ Fix ]] All variables in constraints selected tags are also in vardata
+	tagGroups = newProjState.varData.tag_order
+	acceptableTags: Dict[str, List[str]] = newProjState.varData.tag_members
+	
+	for ind, constr in enumerate(newProjState.setupList):
+		leftTags = deepcopy(constr.selLeftTags)
+		rightTags = deepcopy(constr.selRightTags)
+
+		for group in tagGroups:
+			for tag in leftTags[group]:
+				if tag not in acceptableTags[group]:
+					# print(f"Found left tag to remove: {tag} from {group} in {constr.namePrefix}")
+					newProjState.setupList[ind].selLeftTags[group].remove(tag)
+			for tag in rightTags[group]:
+				if tag not in acceptableTags[group]:
+					# print(f"Found right tag to remove: {tag} from {group} in {constr.namePrefix}")
+					newProjState.setupList[ind].selRightTags[group].remove(tag)
+	
+
+	# [[ Fix ]] All variables in selected tags appear at most once
+	# TODO
+
+
+	# [[ Fix ]] All variables in var data appear at most once
+	# TODO
+
+	return newProjState
+
+
+
+
+
+
+
+
+'''
+⠀⠀⠀⠀⠀⠀⠀⢀⣀⣤⠴⠞⠛⠲⢦⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⣀⣠⡤⠶⠛⠋⠁⠀⠀⠀⠀⠀⠀⠀⠉⠛⠳⠦⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀
+⣶⣟⡉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠲⢦⣤⡀⠀⠀⠀
+⣿⠀⠉⠓⠦⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⠴⠒⠋⢹⡇⠀⠀⠀
+⣿⠀⠀⠀⠀⠀⠉⠛⠲⢤⣀⠀⠀⠀⢀⣀⡤⠶⠚⠉⠁⠀⠀⠀⠀⢸⡇⠀⠀⠀
+⣿⢰⣤⣀⡀⠀⠀⠀⠀⠀⠈⠙⢲⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⠀
+⣿⠀⠉⠛⠛⠃⠠⣤⣀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⠀
+⣿⠀⠀⠀⠀⠀⠀⠈⠛⠿⠷⠆⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠇⠀⠀⠀
+⣿⠀⠀⠀⢤⣄⡀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀
+⣿⡀⠀⠀⠀⠈⠉⠁⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀
+⠈⠙⠳⢤⣄⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣤⠾⠀⠀⠀⠀
+⠀⠀⠀⠀⠈⠙⠶⣤⣀⠀⠀⠀⢸⠀⠀⠀⠀⢀⣀⣤⢶⢞⠋⠙⢧⡀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⢻⢹⠛⠶⣤⣸⣠⣤⡶⡛⠻⡝⣿⡌⢧⢣⡀⠀⠳⡄⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠈⡇⢇⠀⢹⡉⠹⡄⢳⢣⠀⠹⣾⣼⡌⢷⡱⡄⠀⠙⢦⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⢹⠸⡀⠈⣇⠀⢳⠈⢧⢣⠀⠹⣿⡿⡀⢳⡘⣄⠀⠈⠳⡀
+⠀⠀⠀⠀⠀⠀⠀⠀⠘⣇⢇⢀⡼⠀⠈⣇⠘⣆⢇⠀⠹⡟⠿⠞⠳⡈⢦⠀⠀⣹
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠉⠀⠀⠀⠸⡄⠸⡌⢆⠀⠹⡄⠀⠀⠹⠤⠧⠾⠁
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠳⣤⣽⡌⡆⠀⠹⡄⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠳⢼⡴⠚⠀⠀⠀⠀⠀⠀⠀
+
+	Isn't this code just oh so ghastly?
+
+'''
+
+
+
+

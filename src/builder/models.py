@@ -59,6 +59,29 @@ for cs in ComparisonSign:
 
 @attrs.frozen
 class VarsData:
+	'''
+	Stores all data needed to reconstruct and work with the variables.
+
+	delim: The seperating character
+	tag_order: List of the tags, in order that they appear
+	all_vars: List of variables, where variables are stored as lists of their tags
+	tag_members: Dictionary between a tag group (from tag_order) and which tags it has
+
+	== Example
+	variables = ['167N_PLSQ_2021', '167N_THNB_2021', '167N_PLSQ_2025']
+
+	# Basically from user Input
+	delim = '_' 
+	tag_order = ['for_type', 'mng', 'year'] (user input)
+
+	# Generated
+	all_vars = [ ['167N', 'PLSQ', '2021'], ['167N', 'THNB', '2021'], ['167N', 'PLSQ', '2025']]
+	tag_members = {
+		'for_type': ['167N'],
+		'mng': ['PLSQ', 'THNB'],
+		'year': ['2021', '2025']
+	}
+	'''
 	delim: str
 	tag_order: List[str]
 	all_vars: List[List[str]]
@@ -97,11 +120,15 @@ class Equation:
 
 @attrs.define
 class ConstraintGroup:
+	'''
+	Stores actual equations, and is generated from a SetupConstraintGroup.
+	'''
 	groupName: str
 	equations: List[Equation]
 
-	# TODO: These may be unneeded ??
-	# These are meant to go unchanged once the group
+	# The plan was for there to eventually be a fine-tuning screen
+	# where you could modify individual equations, coefficients, etc.
+	# Otherwise, these values serve no purpose
 	SPLIT_BY: List[str]
 	DEFAULT_COMPARE: ComparisonSign
 	DEFAULT_LEFT_COEF: float
@@ -110,6 +137,19 @@ class ConstraintGroup:
 
 @attrs.define
 class SetupConstraintGroup:
+	'''
+	Contains the information needed to generate a list of equations, aka constraints.
+
+	namePrefix: The starting name of a constraint
+	splitBy: Which tags to split by. Eg: ['for_type', 'mng'] when all tags are ['for_type', 'mng', 'year']
+	defComp: Default comparison
+	defLeftCoef: Default coefficient for variables on the left
+	defRightCoef: Default coefficient for right variabels
+	defConstant: Default value to be added on the right
+
+	selLeftTags: Which tags are selected for equations on the left
+	selRightTags: Which tags are selected for equations on the right
+	'''
 	namePrefix: str
 	splitBy: List[str]
 	defComp: ComparisonSign
@@ -136,6 +176,27 @@ class SetupConstraintGroup:
 			selLeftTags=selectedTags,
 			selRightTags=deepcopy(selectedTags)
 		)
+	
+	@staticmethod
+	def createFullSetup(varData: VarsData):
+		'''
+		Creates a setupConstraintGroup with all setting set to non-zero values,
+		and all tags selected. Useful for testing.
+		'''
+		selectedTags = {}
+		for tag in varData.tag_order:
+			selectedTags[tag] = deepcopy(varData.tag_members[tag])
+		
+		return SetupConstraintGroup(
+			namePrefix="unnamed_full",
+			splitBy=deepcopy(varData.tag_order),
+			defComp=ComparisonSign.EQ,
+			defLeftCoef=2.0,
+			defRightCoef=1.0,
+			defConstant=10,
+			selLeftTags=selectedTags,
+			selRightTags=deepcopy(selectedTags)
+		)
 
 
 
@@ -147,6 +208,12 @@ class SetupConstraintGroup:
 
 
 
+
+#
+# Project State Classes
+#
+# These classes get exported (basically as json) into .cproj files.
+# They store _everything_ for a project.
 
 @attrs.define
 class ProjectState:
@@ -168,6 +235,13 @@ class ProjectState:
 
 @attrs.define
 class ProjectState_V0_0:
+	'''
+	This class is the original project state class. 
+	If a project file is read into this format, convertUp() is called
+	to convert it to the newest version.
+
+	You will notice, there is no difference between these two project state versions.
+	'''
 	varData: VarsData
 	setupList: List[SetupConstraintGroup]
 
@@ -186,63 +260,26 @@ class ProjectState_V0_0:
 
 
 
+	
 
-_model_versions = [
-	ProjectState,
-	ProjectState_V0_0
-]
 
-def readProjectStateFile (filepath: str) -> Union[ProjectState, str]:
+
+
+def toOutputStr (obj: Any, type: Type, pretty=False) -> str:
 	'''
-	Attempts to read the project file at the filepath.
+	Turns the passed python object into a string. Useful for human-readable
+	serialization.
 
-	If reading an older project file, will convert up
-	to a more recent version.
-
-	Returns None and an error message if unsuccesful.
+	Pretty = True will format the json with indents, and across multiple lines.
 	'''
-	fileData = None
-	try:
-		with open(filepath, 'r') as file:
-			fileData = file.read()
-	except:
-		pass
-
-	if fileData == None:
-		return None, "Unable to read file"
-	
-	# See if the data is in fact a model file
-	model = None
-	for m in _model_versions:
-		try:
-			model = fromOutputStr(fileData, m)
-		except:
-			continue
-	
-	if model == None:
-		return None, "Not a valid project file, unable to parse"
-	
-	# Cast the model up
-	while not isinstance(model, ProjectState):
-		_prevModel = model
-		model = model.convertUp()
-
-		if _prevModel == model:
-			return None, "Conversion code is messed up"
-	
-	return model, None
-	
-	
-
-
-
-
-def toOutputStr (obj: Any, type: Type) -> str:
 	if not isinstance(obj, type):
 		objType = type(obj)
 		raise TypeError(f"Expected {type} got {objType} ")
 	
-	return json.dumps(cattrs.unstructure(obj))
+	if not pretty:
+		return json.dumps(cattrs.unstructure(obj))
+	else:
+		return json.dumps(cattrs.unstructure(obj), indent=2)
 
 
 # TODO: How do I type annotate this ??

@@ -4,8 +4,9 @@ Processor for (string) Rendering
 This file contains methods for string manipulation and converting data to strings.
 '''
 
-import models
 from typing import List
+
+import builder.models as models
 
 
 
@@ -33,6 +34,15 @@ def trimEllipsisRight (baseStr: str, maxLen: int) -> str:
 
 
 def renderSingleEq (eq: models.Equation, delim: str, charwidth:int=-1) -> str:
+	'''
+	From an equation, generates a string to preview the equation.
+
+	Currently, charwidth does nothing.
+
+	example:
+	unnamed_full_167N_2021_PLSQ
+	2*167N_2021_PLSQ == 167N_2021_PLSQ + 10.0
+	'''
 	leftVarsStr = _renderVarsString(eq.leftVars, eq.leftCoefs, delim)
 	rightVarStr = _renderVarsString(eq.rightVars, eq.rightCoefs, delim)
 
@@ -49,6 +59,10 @@ def renderSingleEq (eq: models.Equation, delim: str, charwidth:int=-1) -> str:
 
 
 def _renderVarsString (varTags: List[List[str]], varCoefs: List[float], delim: str) -> str:
+	'''
+	Combines a list of variables with a list of coefficients.
+	Aka, generate half an equation.
+	'''
 	varStrs: List[str] = [delim.join(tags) for tags in varTags]
 	coefVarStrs: List[str] = []
 
@@ -69,11 +83,14 @@ def _renderVarsString (varTags: List[List[str]], varCoefs: List[float], delim: s
 		
 		
 def renderConstraintGroup (group: models.ConstraintGroup, delim: str, charwidth:int=-1) -> str:
+	'''
+	Renders a preview for a full constraint group
+	'''
 	NUM_EQS = 5
 	eqs = group.equations[:NUM_EQS]
 
 	# print(f"In render method. # Eqs: {len(eqs)}, Eqs: {eqs}")
-	print(f"In render method. # Eqs: {len(eqs)}")
+	# print(f"In render method. # Eqs: {len(eqs)}")
 
 	if len(eqs) == 0:
 		return "No Constraints Exist"
@@ -86,52 +103,6 @@ def renderConstraintGroup (group: models.ConstraintGroup, delim: str, charwidth:
 	return finalStr
 
 
-# def renderCompiledConstraintOLD(constr: models.CompiledConstraint, delim: str, charwidth:int=-1) -> str:
-# 	'''
-# 	Converts a compile constriant into a string for previewing
-# 	'''
-# 	varsStr = ""
-
-# 	for ind, varTags in enumerate(constr.var_tags):
-# 		coeff = constr.var_coeffs[ind]
-# 		coeffStr = ''
-
-# 		if coeff == 1:
-# 			pass
-# 		elif coeff == int(coeff):
-# 			coeffStr = str(int(coeff)) + "*"
-# 		else:
-# 			coeffStr = str(coeff) + "*"
-
-# 		varsStr += coeffStr + delim.join(varTags)
-# 		varsStr += " + "
-
-# 	varsStr = varsStr[:-len(" + ")]
-# 	rightHandStr = str(constr.compare_type.toSymbols()) + " " + str(constr.compare_value)
-# 	if charwidth != -1:
-# 		varsStr = trimEllipsisRight(varsStr, charwidth - len(rightHandStr) - 1)
-
-# 	return constr.name + ":\n" + varsStr + " " + rightHandStr + "\n"
-
-
-# def renderMultipleCompiledConstraintsOLD(constrList: List[models.CompiledConstraint], delim: str, charWidth: int, numConstrs=5) -> str:
-# 	'''
-# 	Converts a list of compiled constraints
-# 	'''
-# 	clist = constrList
-# 	if numConstrs != -1:
-# 		clist = clist[:numConstrs]
-	
-# 	finalStr = ''
-# 	for constr in clist:
-# 		finalStr += renderCompiledConstraintOLD(constr, delim, charWidth)
-# 		finalStr += '\n'
-	
-# 	return finalStr
-
-
-
-
 
 
 
@@ -139,3 +110,8 @@ def renderConstraintGroup (group: models.ConstraintGroup, delim: str, charwidth:
 if __name__ == '__main__':
 	print(trimEllipsisRight("1234567890", maxLen=7))
 	print(trimEllipsisLeft("1234567890", maxLen=7))
+
+
+
+
+

@@ -1,15 +1,19 @@
+'''
+io_cmd.py
 
+Functions for getting command-line input. Useful for testing
+outside the gui.
+'''
 import sys
 from pathlib import Path
 from typing import List
 
-import linting as lint
+import builder.proc_linting as lint
 
 
 def getTagGroupNames (tagMems: List[List[str]]) -> List[str]:
 	'''
-		Takes the list of different group ids and asks the user
-		to name them. For ex:
+		Gets user input for names of tag groups. For example:
 
 		input:
 		[
@@ -18,7 +22,7 @@ def getTagGroupNames (tagMems: List[List[str]]) -> List[str]:
 			['PLSQ', 'PLWF', 'RBWF' ...]
 		]
 
-		output (given by user):
+		output (prompts the user for each group name):
 		[
 			"species",
 			"year",

@@ -1,5 +1,8 @@
 '''
-Constraint Builder Objective File Import
+New Project Screen
+
+This screen shows up when a new project is being created.
+It prompts the user for the objective file and constructs a varData object.
 '''
 
 import math
@@ -9,14 +12,14 @@ from pathlib import Path
 from tkinter import ttk
 from typing import List
 
-import proc_constraints as proc
-import gui_projectoverview
-import io_file
-import linting as lint
-import models
-from gui_consts import *
-import devtesting
-import proc_render as render
+import builder.proc_constraints as proc
+import builder.gui_projectoverview as gui_projectoverview
+import builder.io_file as io_file
+import builder.proc_linting as lint
+import builder.models as models
+import builder.devtesting as devtesting
+import builder.proc_render as render
+from builder.gui_consts import *
 
 # Exposed gui elements
 _lblObjFile: tk.Label = None
@@ -234,8 +237,8 @@ def redrawNamingFrame(tagLists: List[List[str]]) -> None:
 def redrawNamingStatus(inputNames: List[str]) -> None:
 	global _lblVerifyNames, _errWithNamesList, _errWithObjFile
 
-	print(f" > Redrawing Naming status: {_errWithObjFile}")
-	print(f" > {inputNames}")
+	# print(f" > Redrawing Naming status: {_errWithObjFile}")
+	# print(f" > {inputNames}")
 
 	if inputNames == None or _errWithObjFile != None:
 		_lblVerifyNames['text'] = ''
