@@ -30,7 +30,7 @@ def dummyProjectState() -> models.ProjectState:
 	setupList = [
 		models.SetupConstraintGroup.createEmptySetup(varData),
 		models.SetupConstraintGroup.createFullSetup(varData)
-	]
+	] * 20
 
 	return models.ProjectState(
 		varData = varData,

@@ -15,6 +15,7 @@ import builder.gui_newcsv as gui_newcsv
 import builder.models as models
 import builder.devtesting as devtesting
 import builder.io_file as io_file
+from builder.scrolllableframe import ScrollableFrame
 from builder.gui_consts import *
 
 # Exposed GUI Elements
@@ -282,13 +283,18 @@ def buildGUI_ProjectOverview(root: tk.Tk, projectState: models.ProjectState) -> 
 	root.rowconfigure(1, weight=1)
 	root.columnconfigure([0, 1], weight=1)
 
+	root.minsize(width=1730, height=500)
+
 	# Header text
 	lblHeader = tk.Label(root, text="Project Overview")
 	lblHeader.grid(row=0, column=0, columnspan=2, padx=10, pady=(10, 0))
 
 	# Constraint Groups Display
 	frmConstrsDisplay = buildConstraintGroupListFrame(root)
+	frmConstrsDisplay.config(background="yellow")
 	frmConstrsDisplay.grid(row=1, column=0, columnspan=2, padx=10, pady=(10, 0), sticky="nsew")
+
+	frmConstrsDisplay.canvas.configure(height=350)
 
 	# New Constraint Group
 	frmNewConstrBtn = buildConstraintButtonFrame(root)
@@ -307,13 +313,15 @@ def buildGUI_ProjectOverview(root: tk.Tk, projectState: models.ProjectState) -> 
 	redrawConstrUpdate(_constrGroupList)
 	
 
-def buildConstraintGroupListFrame(root: tk.Tk) -> tk.Frame:
+def buildConstraintGroupListFrame(root: tk.Tk) -> ScrollableFrame:
 	global _frmConstrsDisplay
 
-	_frmConstrsDisplay = tk.Frame(root)
+	# _frmConstrsDisplay = tk.Frame(root)
+	outFrmConstrsDisplay = ScrollableFrame(root)
+	_frmConstrsDisplay = outFrmConstrsDisplay.scrollable_frame
 	_frmConstrsDisplay.columnconfigure(0, weight=1)
 
-	return _frmConstrsDisplay
+	return outFrmConstrsDisplay
 
 
 def buildConstraintButtonFrame(root: tk.Tk) -> tk.Frame:
