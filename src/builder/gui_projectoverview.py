@@ -318,8 +318,9 @@ def buildConstraintGroupListFrame(root: tk.Tk) -> ScrollableFrame:
 
 	# _frmConstrsDisplay = tk.Frame(root)
 	outFrmConstrsDisplay = ScrollableFrame(root)
+	outFrmConstrsDisplay.columnconfigure(0, weight=1)
 	_frmConstrsDisplay = outFrmConstrsDisplay.scrollable_frame
-	_frmConstrsDisplay.columnconfigure(0, weight=1)
+	_frmConstrsDisplay.columnconfigure([0, 1, 2, 3, 4], weight=1)
 
 	return outFrmConstrsDisplay
 
