@@ -1,0 +1,243 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.2">
+  <object class="ttk.Frame" id="top">
+    <property name="height">200</property>
+    <property name="padding">15</property>
+    <property name="width">200</property>
+    <layout manager="grid">
+      <property name="column">0</property>
+      <property name="row">0</property>
+    </layout>
+    <containerlayout manager="grid">
+      <property type="row" id="1" name="weight">1</property>
+    </containerlayout>
+    <child>
+      <object class="ttk.Frame" id="frm_title">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="columnspan">2</property>
+          <property name="row">0</property>
+          <property name="sticky">ew</property>
+        </layout>
+        <containerlayout manager="grid">
+          <property type="col" id="0" name="weight">1</property>
+        </containerlayout>
+        <child>
+          <object class="ttk.Label" id="lbl_title">
+            <property name="anchor">center</property>
+            <property name="justify">center</property>
+            <property name="text" translatable="yes">Project Overview</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="row">0</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="frm_constraints">
+        <property name="height">300</property>
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="row">1</property>
+          <property name="sticky">nsew</property>
+        </layout>
+        <containerlayout manager="grid">
+          <property type="col" id="0" name="weight">1</property>
+          <property type="row" id="0" name="weight">1</property>
+        </containerlayout>
+        <child>
+          <object class="ttk.Frame" id="frm_constraint_editing">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">1</property>
+              <property name="sticky">ew</property>
+            </layout>
+            <containerlayout manager="grid">
+              <property type="col" id="0" name="weight">1</property>
+              <property type="col" id="1" name="weight">1</property>
+            </containerlayout>
+            <child>
+              <object class="ttk.Button" id="btn_edit">
+                <property name="command" type="command" cbtype="simple">onbtn_edit</property>
+                <property name="text" translatable="yes">Edit &gt;</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="row">0</property>
+                  <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="btn_delete">
+                <property name="command" type="command" cbtype="simple">onbtn_delete</property>
+                <property name="text" translatable="yes">Delete</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="row">0</property>
+                  <property name="sticky">w</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="button8">
+                <property name="command" type="command" cbtype="simple">onbtn_newconstr</property>
+                <property name="text" translatable="yes">New Constraint</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="row">1</property>
+                  <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="frame6">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="tk.Listbox" id="lb_constraints">
+                <property name="height">25</property>
+                <property name="selectmode">extended</property>
+                <property name="width">35</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                  <property name="sticky">nsew</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Scrollbar" id="scrollbar1">
+                <property name="orient">vertical</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="row">0</property>
+                  <property name="sticky">ns</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="frm_info">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="grid">
+          <property name="column">1</property>
+          <property name="row">1</property>
+          <property name="sticky">nsew</property>
+        </layout>
+        <containerlayout manager="grid">
+          <property type="row" id="0" name="weight">1</property>
+        </containerlayout>
+        <child>
+          <object class="ttk.Labelframe" id="lblfrm_info">
+            <property name="height">200</property>
+            <property name="text" translatable="yes">Project Info</property>
+            <property name="width">400</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="row">0</property>
+              <property name="sticky">nsew</property>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="label3">
+                <property name="text" translatable="yes">Make sure to set 
+yscrollcommand of listbox and
+.config(command=...) for the scrollbar</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="ipadx">5</property>
+                  <property name="ipady">5</property>
+                  <property name="padx">5</property>
+                  <property name="row">0</property>
+                  <property name="sticky">nsew</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Labelframe" id="lblfrm_buttons">
+            <property name="height">200</property>
+            <property name="text" translatable="yes">Options</property>
+            <property name="width">200</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="padx">5</property>
+              <property name="pady">5</property>
+              <property name="row">1</property>
+              <property name="sticky">nsew</property>
+            </layout>
+            <containerlayout manager="grid">
+              <property type="col" id="1" name="weight">1</property>
+            </containerlayout>
+            <child>
+              <object class="ttk.Button" id="btn_save">
+                <property name="command" type="command" cbtype="simple">onbtn_changeobj</property>
+                <property name="text" translatable="yes">Change obj .csv</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="row">0</property>
+                  <property name="sticky">ew</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="button6">
+                <property name="command" type="command" cbtype="simple">onbtn_saveproj</property>
+                <property name="text" translatable="yes">Save Project</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="row">1</property>
+                  <property name="sticky">w</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="button7">
+                <property name="command" type="command" cbtype="simple">onbtn_exportcsv</property>
+                <property name="text" translatable="yes">Export to .csv</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="padx">5</property>
+                  <property name="pady">5</property>
+                  <property name="row">0</property>
+                  <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
